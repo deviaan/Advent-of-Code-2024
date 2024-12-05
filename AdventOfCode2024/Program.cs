@@ -1,6 +1,8 @@
 ﻿int day;
 bool validInput;
-Day[] days = [new Day1()];
+Day[] days = [
+    new Day1(), new Day2()
+];
 
 
 do
