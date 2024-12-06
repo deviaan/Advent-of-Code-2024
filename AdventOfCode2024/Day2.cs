@@ -6,9 +6,17 @@ public class Day2: Day
         set { }
     }
 
+    private int[][]? reports = null;
+
     public override void FirstSolution()
     {
-        int[][] reports = ProcessInputFile();
+        ProcessInputFile();
+        if (reports == null)
+        {
+            Console.WriteLine("Could not read file");
+            return;
+        }
+
         int safeCounter = 0;
 
         foreach (int[] report in reports)
@@ -22,7 +30,13 @@ public class Day2: Day
 
     public override void SecondSolution()
     {
-        int[][] reports = ProcessInputFile();
+        ProcessInputFile();
+        if (reports == null)
+        {
+            Console.WriteLine("Could not read file");
+            return;
+        }
+
         int safeCounter = 0;
 
         foreach (int[] report in reports)
@@ -34,11 +48,11 @@ public class Day2: Day
         Console.WriteLine($"Safe Reports: {safeCounter}");
     }
 
-    private int[][] ProcessInputFile()
+    private void ProcessInputFile()
     {
         string input = ReadInputFile();
         string[] reportsInput = input.Split('\n');
-        int[][] reports = new int[reportsInput.Length][];
+        reports = new int[reportsInput.Length][];
 
         for (int i = 0; i < reportsInput.Length; i++)
         {
@@ -50,8 +64,6 @@ public class Day2: Day
             }
             reports[i] = currentLevels;
         }
-
-        return reports;
     }
 
     private bool ReportIsSafe(int[] report)

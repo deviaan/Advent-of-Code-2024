@@ -6,9 +6,18 @@ public class Day1: Day
         set { }
     }
 
+    private int[]? leftList = null;
+    private int[]? rightList = null;
+
     public override void FirstSolution() 
     {
-        (int[] leftList, int[] rightList) = ProcessInputFile();
+        ProcessInputFile();
+        if (leftList == null || rightList == null)
+        {
+            Console.WriteLine("Could not load files.");
+            return;
+        }
+
         int totalDistance = 0;
 
         for (int i = 0; i < leftList.Length; i++)
@@ -21,7 +30,13 @@ public class Day1: Day
 
     public override void SecondSolution()
     {
-        (int[] leftList, int[] rightList) = ProcessInputFile();
+        ProcessInputFile();
+        if (leftList == null || rightList == null)
+        {
+            Console.WriteLine("Could not load files.");
+            return;
+        }
+
         int leftListIndex = 0;
         int rightListIndex = 0;
         int? currentNumber = null;
@@ -60,11 +75,14 @@ public class Day1: Day
         Console.WriteLine($"The similarity score is: {similarityScore}");
     }
 
-    private (int[], int[]) ProcessInputFile(){
+    private void ProcessInputFile(){
+        if (leftList != null && rightList != null)
+            return;
+
         string input = ReadInputFile();
         string[] lines = input.Split('\n');
-        int[] leftList = new int[lines.Length];
-        int[] rightList = new int[lines.Length];
+        leftList = new int[lines.Length];
+        rightList = new int[lines.Length];
 
         for (int i = 0; i < lines.Length; i++)
         {
@@ -75,7 +93,5 @@ public class Day1: Day
 
         Array.Sort(leftList);
         Array.Sort(rightList); 
-
-        return (leftList, rightList);
     }
 }

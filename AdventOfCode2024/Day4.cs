@@ -5,15 +5,21 @@ public class Day4 : Day {
     }
 
     private const string XMAS = "XMAS";
-    private const string MAS = "MAS";
     private int VERTICAL = 0;
     private int HORIZONTAL = 0;
     // Forward, Backward, Down, Up, Up Right, Up Left, Down Right, Down Left
     private readonly int[,] SEARCH_DIRECTIONS = { {0, 1}, {0, -1}, {1, 0}, {-1, 0}, {1, 1}, {1, -1}, {-1, 1}, {-1, -1} };
+    private char[,]? charMatrix = null;
 
     public override void FirstSolution()
     {
-        char[,] charMatrix = ProcessInputFile();
+        ProcessInputFile();
+        if (charMatrix == null)
+        {
+            Console.WriteLine("Could not read input");
+            return;
+        }
+
         int wordsFound = 0;
 
         for (int i = 0; i < VERTICAL; i++)
@@ -36,7 +42,13 @@ public class Day4 : Day {
 
     public override void SecondSolution()
     {
-        char[,] charMatrix = ProcessInputFile();
+        ProcessInputFile();
+        if (charMatrix == null)
+        {
+            Console.WriteLine("Could not read input");
+            return;
+        }
+
         int wordsFound = 0;
 
         for (int i = 0; i < VERTICAL; i++)
@@ -54,8 +66,10 @@ public class Day4 : Day {
         Console.WriteLine($"X-MAS Found: {wordsFound}");
     }
 
-    private char[,] ProcessInputFile()
+    private void ProcessInputFile()
     {
+        if (charMatrix != null)
+            return;
 
         string inputFile = ReadInputFile();
         string[] lines = inputFile.Split('\n');
@@ -63,7 +77,7 @@ public class Day4 : Day {
         VERTICAL = lines.Length;
         HORIZONTAL = lines[0].Trim().Length;
 
-        char[,] charMatrix = new char[VERTICAL, HORIZONTAL];
+        charMatrix = new char[VERTICAL, HORIZONTAL];
 
         for (int i = 0; i < VERTICAL; i++)
         {
@@ -73,8 +87,6 @@ public class Day4 : Day {
                 charMatrix[i, j] = lineChars[j];
             }
         }
-
-        return charMatrix;
     }
 
     private bool Search(char[,] charMatrix, int i, int j, int iOffset, int jOffset)

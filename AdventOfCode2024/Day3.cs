@@ -10,9 +10,13 @@ public class Day3 : Day
         set { }
     }
 
+    private string? inputFile = null;
+
     public override void FirstSolution()
     {
-        string inputFile = ReadInputFile();
+        if (inputFile == null)
+            inputFile = ReadInputFile();
+
         const string pattern = @"mul\(\d{1,3}\,\d{1,3}\)";
         int result = 0;
 
@@ -27,7 +31,9 @@ public class Day3 : Day
 
     public override void SecondSolution()
     {
-        string inputFile = ReadInputFile();
+        if (inputFile == null)
+            inputFile = ReadInputFile();
+
         const string pattern = @"mul\(\d{1,3}\,\d{1,3}\)|do\(\)|don't\(\)";
         bool enabled = true;
         int result = 0;
