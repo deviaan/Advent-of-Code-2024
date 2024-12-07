@@ -2,52 +2,62 @@ using System.Text.RegularExpressions;
 
 // Regex feels like cheating
 
+namespace AdventOfCode2024;
+
 public class Day3 : Day
 {
     public override string InputFile 
     {
-        get { return "day3.txt"; }
+        get => "day3.txt";
         set { }
     }
 
-    private string? inputFile = null;
+    private string? _inputFile = null;
 
-    public override void FirstSolution()
+    protected override void FirstSolution()
     {
-        if (inputFile == null)
-            inputFile = ReadInputFile();
+        _inputFile ??= ReadInputFile();
 
         const string pattern = @"mul\(\d{1,3}\,\d{1,3}\)";
-        int result = 0;
+        var result = 0;
 
-        foreach (Match match in Regex.Matches(inputFile, pattern))
+        foreach (Match match in Regex.Matches(_inputFile, pattern))
         {
-            string[] values = match.Value.Remove(match.Value.Length -1, 1).Remove(0, 4).Split(',');
+            var values = match.Value.Remove(match.Value.Length -1, 1).Remove(0, 4).Split(',');
             result += int.Parse(values[0]) * int.Parse(values[1]);
         }
 
         Console.WriteLine($"Final Result: {result}");
     }
 
-    public override void SecondSolution()
+    protected override void SecondSolution()
     {
-        if (inputFile == null)
-            inputFile = ReadInputFile();
+        _inputFile ??= ReadInputFile();
 
         const string pattern = @"mul\(\d{1,3}\,\d{1,3}\)|do\(\)|don't\(\)";
-        bool enabled = true;
-        int result = 0;
+        var enabled = true;
+        var result = 0;
 
-        foreach (Match match in Regex.Matches(inputFile, pattern))
+        foreach (Match match in Regex.Matches(_inputFile, pattern))
         {
-            if (match.Value == "do()")
-                enabled = true;
-            else if (match.Value == "don't()")
-                enabled = false;
-            else if (enabled)
+            switch (match.Value)
             {
-                string[] values = match.Value.Remove(match.Value.Length -1, 1).Remove(0, 4).Split(',');
-                result += int.Parse(values[0]) * int.Parse(values[1]);
+                case "do()":
+                    enabled = true;
+                    break;
+                case "don't()":
+                    enabled = false;
+                    break;
+                default:
+                {
+                    if (enabled)
+                    {
+                        var values = match.Value.Remove(match.Value.Length -1, 1).Remove(0, 4).Split(',');
+                        result += int.Parse(values[0]) * int.Parse(values[1]);
+                    }
+
+                    break;
+                }
             }
         }
 

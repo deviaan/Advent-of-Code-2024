@@ -1,73 +1,75 @@
+namespace AdventOfCode2024;
+
 public class Day1: Day
 {
     public override string InputFile
     {
-        get { return "day1.txt"; }
+        get => "day1.txt";
         set { }
     }
 
-    private int[]? leftList = null;
-    private int[]? rightList = null;
+    private int[]? _leftList = null;
+    private int[]? _rightList = null;
 
-    public override void FirstSolution() 
+    protected override void FirstSolution() 
     {
         ProcessInputFile();
-        if (leftList == null || rightList == null)
+        if (_leftList == null || _rightList == null)
         {
             Console.WriteLine("Could not load files.");
             return;
         }
 
-        int totalDistance = 0;
+        var totalDistance = 0;
 
-        for (int i = 0; i < leftList.Length; i++)
+        for (var i = 0; i < _leftList.Length; i++)
         {
-            totalDistance += Math.Abs(leftList[i] - rightList[i]);
+            totalDistance += Math.Abs(_leftList[i] - _rightList[i]);
         }
 
         Console.WriteLine($"The total distance is: {totalDistance}");
     }
 
-    public override void SecondSolution()
+    protected override void SecondSolution()
     {
         ProcessInputFile();
-        if (leftList == null || rightList == null)
+        if (_leftList == null || _rightList == null)
         {
             Console.WriteLine("Could not load files.");
             return;
         }
 
-        int leftListIndex = 0;
-        int rightListIndex = 0;
+        var leftListIndex = 0;
+        var rightListIndex = 0;
         int? currentNumber = null;
-        int currentSimilarityCount = 0;
-        int similarityScore = 0;
+        var currentSimilarityCount = 0;
+        var similarityScore = 0;
 
 
-        while (leftListIndex < leftList.Length && rightListIndex < rightList.Length)
+        while (leftListIndex < _leftList.Length && rightListIndex < _rightList.Length)
         {
             // on a new number, reset the similarity count
-            if (currentNumber == null || leftList[leftListIndex] != currentNumber)
+            if (currentNumber == null || _leftList[leftListIndex] != currentNumber)
             {
                 currentSimilarityCount = 0;
-                currentNumber = leftList[leftListIndex];
+                currentNumber = _leftList[leftListIndex];
             }
 
             // when numbers match, update our counter and check the next number on the right
-            if (currentNumber == rightList[rightListIndex])
+            if (currentNumber == _rightList[rightListIndex])
             { 
                 currentSimilarityCount++;
                 rightListIndex++;
             }
             // left list bigger, climb up right list
-            else if (currentNumber > rightList[rightListIndex])
+            else if (currentNumber > _rightList[rightListIndex])
             {
                 rightListIndex++;
             }
             // right list is bigger, add the current number & crawl up left list
             else
             {
-                similarityScore += leftList[leftListIndex] * currentSimilarityCount;
+                similarityScore += _leftList[leftListIndex] * currentSimilarityCount;
                 leftListIndex++;
             }
         }
@@ -76,22 +78,22 @@ public class Day1: Day
     }
 
     private void ProcessInputFile(){
-        if (leftList != null && rightList != null)
+        if (_leftList != null && _rightList != null)
             return;
 
-        string input = ReadInputFile();
-        string[] lines = input.Split('\n');
-        leftList = new int[lines.Length];
-        rightList = new int[lines.Length];
+        var input = ReadInputFile();
+        var lines = input.Split('\n');
+        _leftList = new int[lines.Length];
+        _rightList = new int[lines.Length];
 
-        for (int i = 0; i < lines.Length; i++)
+        for (var i = 0; i < lines.Length; i++)
         {
-            string[] currentLine = lines[i].Split(' ', StringSplitOptions.RemoveEmptyEntries);
-            leftList[i] = int.Parse(currentLine[0]);
-            rightList[i] = int.Parse(currentLine[1]);
+            var currentLine = lines[i].Split(' ', StringSplitOptions.RemoveEmptyEntries);
+            _leftList[i] = int.Parse(currentLine[0]);
+            _rightList[i] = int.Parse(currentLine[1]);
         }
 
-        Array.Sort(leftList);
-        Array.Sort(rightList); 
+        Array.Sort(_leftList);
+        Array.Sort(_rightList); 
     }
 }

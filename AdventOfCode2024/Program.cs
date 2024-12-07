@@ -1,14 +1,15 @@
-﻿int day;
+﻿using AdventOfCode2024;
+
 bool validInput;
 Day[] days = [
-    new Day1(), new Day2(), new Day3(), new Day4(), new Day5(),
+    new Day1(), new Day2(), new Day3(), new Day4(), new Day5(), new Day6(),
 ];
 
 
 do
 {
     Console.WriteLine($"Run which day (max {days.Length})?");
-    validInput = int.TryParse(Console.ReadLine(), out day);
+    validInput = int.TryParse(Console.ReadLine(), out var day);
     if (!validInput || day > days.Length)
     {
         validInput = false;

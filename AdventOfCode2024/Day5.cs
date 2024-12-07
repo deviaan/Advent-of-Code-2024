@@ -1,76 +1,78 @@
+namespace AdventOfCode2024;
+
 public class Day5 : Day
 {
     public override string InputFile { 
-        get { return "day5.txt"; }
+        get => "day5.txt";
         set { }
     }
 
-    private readonly Dictionary<int, List<int>> PageOrderRules = [];
-    private int[][]? Updates = null;
+    private readonly Dictionary<int, List<int>> _pageOrderRules = [];
+    private int[][]? _updates = null;
 
-    public override void FirstSolution()
+    protected override void FirstSolution()
     {
         ProcessInputFile();
-        if (Updates == null)
+        if (_updates == null)
             return;
 
-        int total = 0;
+        var total = 0;
 
-        foreach (int[] update in Updates)
+        foreach (var update in _updates)
             if (UpdateFollowsRules(update))
                 total += update[update.Length/2];
 
         Console.WriteLine($"Middle Page Sum {total}");
     }
 
-    public override void SecondSolution()
+    protected override void SecondSolution()
     {
         ProcessInputFile();
-        if (Updates == null)
+        if (_updates == null)
             return;
 
-        int total = 0;
+        var total = 0;
 
-        foreach (int[] update in Updates)
+        foreach (var update in _updates)
         {
             if (UpdateFollowsRules(update))
                 continue;
 
-            int[] sortedPage = PageOrderRuleSort(update);
+            var sortedPage = PageOrderRuleSort(update);
             total += sortedPage[sortedPage.Length/2];
         }
 
         Console.WriteLine($"Corrected Middle Page Sum {total}");
     }
 
-    public void ProcessInputFile()
+    private void ProcessInputFile()
     {
-        if (Updates != null)
+        if (_updates != null)
             return;
 
-        string inputFile = ReadInputFile();
-        string[] lines = inputFile.Split('\n');
-        int fileLength = lines.Length;
-        int updatesIndex = 0;
+        var inputFile = ReadInputFile();
+        var lines = inputFile.Split('\n');
+        var fileLength = lines.Length;
+        var updatesIndex = 0;
 
-        for (int i = 0; i < fileLength; i++)
+        for (var i = 0; i < fileLength; i++)
         {
-            string line = lines[i].Trim();
+            var line = lines[i].Trim();
             if (line == "")
             {
                 updatesIndex = i + 1;
                 break;
             }
 
-            string[] pages = line.Split('|');
+            var pages = line.Split('|');
 
-            int pageBefore = int.Parse(pages[0]);
-            int pageAfter = int.Parse(pages[1]);
+            var pageBefore = int.Parse(pages[0]);
+            var pageAfter = int.Parse(pages[1]);
 
-            if (!PageOrderRules.ContainsKey(pageBefore))
-                PageOrderRules.Add(pageBefore, []);
+            if (!_pageOrderRules.ContainsKey(pageBefore))
+                _pageOrderRules.Add(pageBefore, []);
 
-            PageOrderRules[pageBefore].Add(pageAfter);
+            _pageOrderRules[pageBefore].Add(pageAfter);
         }
 
         if (updatesIndex == 0)
@@ -79,25 +81,25 @@ public class Day5 : Day
             return;
         }
 
-        Updates = new int[fileLength - updatesIndex][];
+        _updates = new int[fileLength - updatesIndex][];
 
-        for (int i = updatesIndex; i < fileLength; i++)
+        for (var i = updatesIndex; i < fileLength; i++)
         {
-            string[] line = lines[i].Trim().Split(',');
-            int[] update = new int[line.Length];
+            var line = lines[i].Trim().Split(',');
+            var update = new int[line.Length];
 
-            for (int j = 0; j < line.Length; j++)
+            for (var j = 0; j < line.Length; j++)
             {
                 update[j] = int.Parse(line[j]);
             }
 
-            Updates[i - updatesIndex] = update;
+            _updates[i - updatesIndex] = update;
         }
     }
 
     private static bool PageInRules(int page, List<int> pageRules)
     {
-        foreach (int pageMustComeBefore in pageRules)
+        foreach (var pageMustComeBefore in pageRules)
             if (page == pageMustComeBefore)
                 return true;
         
@@ -106,8 +108,8 @@ public class Day5 : Day
 
     private static int[] Swap(int[] update, int i, int j)
     {
-        int prevI = update[i];
-        int prevJ = update[j];
+        var prevI = update[i];
+        var prevJ = update[j];
 
         update[i] = prevJ;
         update[j] = prevI;
@@ -117,14 +119,14 @@ public class Day5 : Day
 
     private bool UpdateFollowsRules(int[] update)
     {
-        int?[] pagesSeen = new int?[update.Length];
-        int pageSeenIndex = 0;
+        var pagesSeen = new int?[update.Length];
+        var pageSeenIndex = 0;
 
-        foreach (int page in update)
+        foreach (var page in update)
         {
-            if (PageOrderRules.TryGetValue(page, out List<int>? pageRules))
+            if (_pageOrderRules.TryGetValue(page, out List<int>? pageRules))
             {
-                foreach (int? pageSeen in pagesSeen)
+                foreach (var pageSeen in pagesSeen)
                 {
                     if (pageSeen == null)
                         continue;
@@ -143,19 +145,19 @@ public class Day5 : Day
 
     private int[] PageOrderRuleSort(int[] update)
     {
-        for (int i = 1; i < update.Length; i++)
+        for (var i = 1; i < update.Length; i++)
         {
-            if (!PageOrderRules.TryGetValue(update[i], out List<int>? pageRules))
+            if (!_pageOrderRules.TryGetValue(update[i], out List<int>? pageRules))
                 continue;
 
-            for (int j = i-1; j >= 0; j--)
+            for (var j = i-1; j >= 0; j--)
             {
-                if (PageInRules(update[j], pageRules))
-                {
-                    update = Swap(update, i, j);
-                    i = 0;
-                    break;
-                }
+                if (!PageInRules(update[j], pageRules))
+                    continue;
+                
+                update = Swap(update, i, j);
+                i = 0;
+                break;
             }
         }
 

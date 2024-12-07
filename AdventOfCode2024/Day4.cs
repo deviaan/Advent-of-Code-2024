@@ -1,36 +1,38 @@
+namespace AdventOfCode2024;
+
 public class Day4 : Day {
     public override string InputFile { 
-        get { return "day4.txt"; }
+        get => "day4.txt";
         set { }
     }
 
     private const string XMAS = "XMAS";
-    private int VERTICAL = 0;
-    private int HORIZONTAL = 0;
+    private int _vertical = 0;
+    private int _horizontal = 0;
     // Forward, Backward, Down, Up, Up Right, Up Left, Down Right, Down Left
-    private readonly int[,] SEARCH_DIRECTIONS = { {0, 1}, {0, -1}, {1, 0}, {-1, 0}, {1, 1}, {1, -1}, {-1, 1}, {-1, -1} };
-    private char[,]? charMatrix = null;
+    private readonly int[,] _searchDirections = { {0, 1}, {0, -1}, {1, 0}, {-1, 0}, {1, 1}, {1, -1}, {-1, 1}, {-1, -1} };
+    private char[,]? _charMatrix = null;
 
-    public override void FirstSolution()
+    protected override void FirstSolution()
     {
         ProcessInputFile();
-        if (charMatrix == null)
+        if (_charMatrix == null)
         {
             Console.WriteLine("Could not read input");
             return;
         }
 
-        int wordsFound = 0;
+        var wordsFound = 0;
 
-        for (int i = 0; i < VERTICAL; i++)
+        for (var i = 0; i < _vertical; i++)
         {
-            for (int j = 0; j < HORIZONTAL; j++)
+            for (var j = 0; j < _horizontal; j++)
             {
-                for (int k = 0; k < SEARCH_DIRECTIONS.GetLength(0); k++)
+                for (var k = 0; k < _searchDirections.GetLength(0); k++)
                 {
                     if (
-                        charMatrix[i, j] == 'X' &&
-                        Search(charMatrix, i, j, SEARCH_DIRECTIONS[k, 0], SEARCH_DIRECTIONS[k, 1])
+                        _charMatrix[i, j] == 'X' &&
+                        Search(_charMatrix, i, j, _searchDirections[k, 0], _searchDirections[k, 1])
                     )
                         wordsFound++;
                 }
@@ -40,10 +42,10 @@ public class Day4 : Day {
         Console.WriteLine($"XMAS found: {wordsFound}");
     }
 
-    public override void SecondSolution()
+    protected override void SecondSolution()
     {
         ProcessInputFile();
-        if (charMatrix == null)
+        if (_charMatrix == null)
         {
             Console.WriteLine("Could not read input");
             return;
@@ -51,13 +53,13 @@ public class Day4 : Day {
 
         int wordsFound = 0;
 
-        for (int i = 0; i < VERTICAL; i++)
+        for (int i = 0; i < _vertical; i++)
         {
-            for (int j = 0; j < HORIZONTAL; j++)
+            for (int j = 0; j < _horizontal; j++)
             {
                 if (
-                    charMatrix[i, j] == 'A' &&
-                    XSearch(charMatrix, i, j)
+                    _charMatrix[i, j] == 'A' &&
+                    XSearch(_charMatrix, i, j)
                 )
                     wordsFound++;
             }
@@ -68,48 +70,42 @@ public class Day4 : Day {
 
     private void ProcessInputFile()
     {
-        if (charMatrix != null)
+        if (_charMatrix != null)
             return;
 
-        string inputFile = ReadInputFile();
-        string[] lines = inputFile.Split('\n');
+        var inputFile = ReadInputFile();
+        var lines = inputFile.Split('\n');
     
-        VERTICAL = lines.Length;
-        HORIZONTAL = lines[0].Trim().Length;
+        _vertical = lines.Length;
+        _horizontal = lines[0].Trim().Length;
 
-        charMatrix = new char[VERTICAL, HORIZONTAL];
+        _charMatrix = new char[_vertical, _horizontal];
 
-        for (int i = 0; i < VERTICAL; i++)
+        for (var i = 0; i < _vertical; i++)
         {
-            char[] lineChars = lines[i].Trim().ToCharArray();
-            for (int j = 0; j < HORIZONTAL; j++)
+            var lineChars = lines[i].Trim().ToCharArray();
+            for (var j = 0; j < _horizontal; j++)
             {
-                charMatrix[i, j] = lineChars[j];
+                _charMatrix[i, j] = lineChars[j];
             }
         }
     }
 
     private bool Search(char[,] charMatrix, int i, int j, int iOffset, int jOffset)
     {
-        for (int k = 0; k < XMAS.Length; k++)
+        for (var k = 0; k < XMAS.Length; k++)
         {
-            int ii = i + (iOffset * k);
-            int jj = j + (jOffset * k);
+            var ii = i + (iOffset * k);
+            var jj = j + (jOffset * k);
 
-            if (ii < 0 || ii >= VERTICAL)
-            {
+            if (ii < 0 || ii >= _vertical)
                 return false;
-            }
 
-            if (jj < 0 || jj >= HORIZONTAL)
-            {
+            if (jj < 0 || jj >= _horizontal)
                 return false;
-            }
 
             if (charMatrix[ii, jj] != XMAS[k])
-            {
                 return false;
-            }
         }
 
         return true;
@@ -120,16 +116,16 @@ public class Day4 : Day {
         // top left & bottom right, top right & bottom left
         int[][] coords = [ [i-1, j-1, i+1, j+1], [i-1, j+1, i+1, j-1] ];
 
-        foreach (int[] coord in coords)
+        foreach (var coord in coords)
         {
-            for (int k = 0; k < coord.Length; k++)
+            for (var k = 0; k < coord.Length; k++)
             {
-                if (coord[k] < 0 || coord[k] >= (k % 2 == 0 ? VERTICAL: HORIZONTAL))
+                if (coord[k] < 0 || coord[k] >= (k % 2 == 0 ? _vertical: _horizontal))
                     return false;
             }
 
-            char topChar = charMatrix[coord[0], coord[1]];
-            char botChar = charMatrix[coord[2], coord[3]];
+            var topChar = charMatrix[coord[0], coord[1]];
+            var botChar = charMatrix[coord[2], coord[3]];
 
             if (
                 !(topChar == 'M' || topChar == 'S') ||
