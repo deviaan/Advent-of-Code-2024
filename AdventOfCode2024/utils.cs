@@ -1,3 +1,5 @@
+using System.Runtime.CompilerServices;
+
 namespace AdventOfCode2024;
 
 public readonly struct Coords(int x, int y) : IEquatable<Coords>
@@ -6,16 +8,24 @@ public readonly struct Coords(int x, int y) : IEquatable<Coords>
     public int Y { get; } = y;
 
     public override string ToString() => $"({X}, {Y})";
-
     public override int GetHashCode() => (X, Y).GetHashCode();
+    
+    // Operation with other coords
+    public static Coords operator +(Coords left, Coords right) => new(left.X + right.X, left.Y + right.Y);
+    public static Coords operator -(Coords left, Coords right) => new(left.X - right.X, left.Y - right.Y);
+    public static Coords operator % (Coords left, Coords right) => new (left.X % right.X, left.Y % right.Y);
+    
+    public static bool operator ==(Coords left, Coords right) => left.Equals(right);
+    public static bool operator !=(Coords left, Coords right) => !(left == right);
     public override bool Equals(object? obj) => obj is Coords other && this.Equals(other);
     public bool Equals(Coords other) => X == other.X && Y == other.Y;
     
-    public static Coords operator +(Coords left, Coords right) => new(left.X + right.X, left.Y + right.Y);
-    public static Coords operator -(Coords left, Coords right) => new(left.X - right.X, left.Y - right.Y);
-
-    public static bool operator ==(Coords left, Coords right) => left.Equals(right);
-    public static bool operator !=(Coords left, Coords right) => !(left == right);
+    // Operations with numbers
+    public static Coords operator *(Coords left, int x) => new(left.X * x, left.Y * x);
+    
+    // Helpers
+    public Coords WrapAround(Coords other) => 
+        new Coords(this.X < 0 ? other.X + this.X : this.X, this.Y < 0 ? other.Y + this.Y : this.Y);
 }
 
 public static class Directions
