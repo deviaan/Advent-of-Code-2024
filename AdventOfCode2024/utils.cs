@@ -1,5 +1,3 @@
-using System.Runtime.CompilerServices;
-
 namespace AdventOfCode2024;
 
 public readonly struct Coords(int x, int y) : IEquatable<Coords>
@@ -26,6 +24,12 @@ public readonly struct Coords(int x, int y) : IEquatable<Coords>
     // Helpers
     public Coords WrapAround(Coords other) => 
         new Coords(this.X < 0 ? other.X + this.X : this.X, this.Y < 0 ? other.Y + this.Y : this.Y);
+
+    public void Deconstruct(out int x, out int y)
+    {
+        x = this.X;
+        y = this.Y;
+    }
 }
 
 public static class Directions
